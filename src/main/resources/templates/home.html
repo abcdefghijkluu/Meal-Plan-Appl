@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home Page</title>
+<head>
     <link rel="stylesheet" th:href="@{/style.css}">
+    <title>Meal Creator | Your Meal Planning Made Easy</title>
 </head>
 <body>
     <link rel="stylesheet" th:href="@{/style.css}">
-    <h1>Welcome to the Home Page</h1>
+    <div class="nav-bar">
+      <a th:href="@{/login}">Go to Login</a>
+      <a th:href="@{/signup}">Go to Sign Up Page</a>
 
-    <!-- Link to the Login page -->
-    <a th:href="@{/login}">Go to Login</a>
+    </div>
+
+    <div style="text-align: center;">
+        <h1>Welcome to Meal Creator</h1>
+        <p>Your go-to solution for easy and efficient meal planning</p>
+    </div>
+
+    <section>
+        <h2>About Us</h2>
+        <p>At Meal Creator, you can design a meal plan for up to a week, making meal planning and shopping easier with an automated shopping list.</p>
+    </section>
+
+    <section>
+        <h2>Why Choose Us?</h2>
+        
+            <p>Personalized meal plans tailored to your taste</p>
+            <p>Automated shopping lists for hassle-free planning</p>
+            <p>Options for dietary restrictions and preferences</p>
+        
+    </section>
+
 </body>
 </html>
-

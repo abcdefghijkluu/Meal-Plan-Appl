@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 
+
+
 @Controller
 public class MyController {
 
@@ -21,6 +23,11 @@ public class MyController {
     public String loginPage() {
         return "login"; // This should render login.html
     }
+    @GetMapping("/signup")
+    public String SignUpPage() {
+        return "signup";
+    }
+    
 }
 
 
