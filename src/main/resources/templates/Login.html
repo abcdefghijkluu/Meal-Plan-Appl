@@ -1,25 +1,32 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <link rel="stylesheet" href="style.css">
-    <div class="nav-bar">    <a href="home.html">home Page</a>
-    </div>
-
-    <div style="text-align: center;">
-        <h1>Login Page</h1>
-     </div>
+    <title>Login Page</title>
+    <!-- Correct link to the CSS file -->
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-    
-  <form action="/submit_form" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required>
-    <br><br>
+    <!-- Navigation bar -->
+    <div class="nav-bar">
+        <a th:href="@{/}">Go to Home Page</a>
+    </div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br><br>
+    <!-- Centered login page heading -->
+    <div style="text-align: center;">
+        <h1>Login Page</h1>
+    </div>
 
-    <button type="submit">Submit</button>
+    <!-- Login form -->
+    <form action="/submit_form" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br><br>
 
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br><br>
 
+        <button type="submit">Submit</button>
+    </form>
 </body>
+</html>
