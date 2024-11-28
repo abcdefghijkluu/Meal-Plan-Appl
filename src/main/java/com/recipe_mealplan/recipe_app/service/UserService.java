@@ -29,6 +29,10 @@ public class UserService {
     }
 
     public User createUser(UserDTO userDTO) {
+        if (userRepository.findByUsername(userDTO.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
