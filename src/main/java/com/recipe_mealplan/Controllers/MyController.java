@@ -1,4 +1,4 @@
-package com.recipe_mealplan.recipe_app;
+package com.recipe_mealplan.Controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

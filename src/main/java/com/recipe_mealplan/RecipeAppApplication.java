@@ -1,4 +1,4 @@
-package com.recipe_mealplan.recipe_app;
+package com.recipe_mealplan;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
