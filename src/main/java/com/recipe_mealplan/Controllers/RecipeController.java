@@ -1,6 +1,7 @@
 package com.recipe_mealplan.Controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,7 +16,6 @@ import lombok.var;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -120,6 +120,60 @@ public class RecipeController {
         recipesrepo.save(recipes);
     
         return "redirect:/recipes/recipe";
+    }
+    @GetMapping("recipes/delete")
+    public String deleteRecipe(@RequestParam int id) {
+        Optional<Recipes> optionalRecipe = recipesrepo.findById(id); // Returns Optional<Recipes>
+        if (optionalRecipe.isPresent()) {
+            Recipes recipe = optionalRecipe.get(); // Get the Recipes object from Optional
+            recipesrepo.delete(recipe);
+        }
+        return "redirect:/recipes/recipe"; // Redirect to the recipes listing page
+    }
+    @GetMapping("recipes/edit")
+    public String editRecipes(Model model, @RequestParam int id) {
+        // Get the Optional<Recipes> object
+        Optional<Recipes> optionalRecipe = recipesrepo.findById(id);
+        
+        if (optionalRecipe.isPresent()) {
+            Recipes recipe = optionalRecipe.get(); // Get the actual recipe from the Optional
+            
+            RecipesDto recipesDto = new RecipesDto();
+            recipesDto.setRecipeName(recipe.getRecipeName()); // Access recipe name from the recipe object
+            recipesDto.setInstructions(recipe.getInstructions());
+            recipesDto.setImageName(recipe.getImageName());
+            recipesDto.setCategory(recipe.getCategory());
+            recipesDto.setFoodType(recipe.getFoodType());
+            
+            // Add the recipeDto to the model so it's accessible in the view
+            model.addAttribute("recipeDto", recipesDto);
+            model.addAttribute("recipe", recipe);
+        } else {
+            // Handle case where recipe is not found (optional, you can show an error page or redirect)
+            return "redirect:/recipes/recipe"; // Redirect to the list of recipes
+        }
+    
+        return "recipes/edit"; // Return the view for editing the recipe
+    }
+    @PostMapping("recipes/edit")
+    public String editedRecipes(Model model, @RequestParam int id, @ModelAttribute RecipesDto recipesDto) {
+        Optional<Recipes> recipesOptional = recipesrepo.findById(id);
+    
+        if (recipesOptional.isPresent()) {
+            Recipes recipes = recipesOptional.get();
+    
+            // Update the recipe details
+            recipes.setRecipeName(recipesDto.getRecipeName());
+            recipes.setInstructions(recipesDto.getInstructions());
+            recipes.setImageName(recipesDto.getImageName());
+            recipes.setCategory(recipesDto.getCategory());
+            recipes.setFoodType(recipesDto.getFoodType());
+    
+            // Save the updated recipe back to the database
+            recipesrepo.save(recipes);
+        }
+    
+        return "redirect:/recipes/recipe"; // Redirect after saving
     }
     
     

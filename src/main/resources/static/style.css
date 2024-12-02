@@ -58,4 +58,8 @@ body {
   .add_button:active {
     background-color: #3e8e41; /* Even darker green */
   }
-  
+  .action-buttons {
+    display: flex;
+    gap: 10px; /* Adds space between buttons and links */
+    align-items: center; /* Aligns items vertically if they have different heights */
+}

@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<body>
+    
 <form action="/recipes/create" method="post" th:object="${recipeDto}">
     <div>
         <label for="recipeName">Recipe Name</label>
@@ -52,3 +57,5 @@
         <a href="/recipes/recipe">Cancel</a>
     </div>
 </form>
+</body>
+</html>
