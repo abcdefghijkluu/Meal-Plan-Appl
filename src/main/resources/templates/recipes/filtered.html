@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Filtered Recipes</title>
+</head>
+<body>
+    <h1>Filtered Recipes</h1>
+
+    <!-- Check if there are no filtered recipes -->
+    <div th:if="${filtered.isEmpty()}">
+        <p>No recipes found for the selected filters.</p>
+    </div>
+
+    <!-- Check if there are filtered recipes -->
+    <div th:if="${not filtered.isEmpty()}">
+        <table class="Tables">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Recipe Name</th>
+                <th>Instructions</th>
+                <th>Food origin</th>
+                <th>Food Type</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${#lists.isEmpty(recipes)}">
+                    <td colspan="6">No recipes available</td>
+                </tr>
+       
+                <tr th:each="recipe : ${filtered}">
+                    <td th:text="${recipe.id}"></td>
+                    <td th:text="${recipe.recipeName}"></td>
+                    <td th:text="${recipe.instructions}"></td>
+                    <td th:text="${recipe.category}"></td>
+                    <td th:text="${recipe.foodType}"></td>
+                    <td>
+                            <button id="add_button" type="submit">Add</button>
+
+                        
+
+                    </td>
+                </tr>
+            </tbody>
+            
+            
+        </table> 
+    </div>
+
+    <!-- Link to go back to the filter page -->
+    <a href="/recipes/filter">Go back to filter</a>
+</body>
+</html>

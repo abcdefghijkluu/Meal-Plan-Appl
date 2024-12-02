@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Filtered Recipes</title>
+    <div>
+        <nav>
+            <a th:href="@{/}">Home Page</a>
+            <a th:href="@{/UserPage}">Home Page</a> 
+            <a th:href="@{/recipes/recipe}">Recipes Page</a>
+            <a th:href="@{/recipes/filter}">Filter the Recipes </a>
+            <a th:href="@{/recipes/filtered}">Filter the Recipes </a>
+
+        </nav>
+    </div>
+</head>
+<body>
+    <form action="/recipes/filter" method="post">
+        <!-- Filter by Category -->
+        <fieldset>
+            <legend>Category</legend>
+            <label th:each="category : ${categories}">
+                <input type="checkbox" name="categories" th:value="${category}" />
+                <span th:text="${category}"></span>
+            </label>
+        </fieldset>
+    
+        <!-- Filter by Food Type -->
+        <fieldset>
+            <legend>Food Type</legend>
+            <label th:each="foodType : ${foodTypes}">
+                <input type="checkbox" name="foodTypes" th:value="${foodType}" />
+                <span th:text="${foodType}"></span>
+            </label>
+        </fieldset>
+    
+        <button type="submit">Filter Recipes</button>
+    </form>
+    
+</body>
+</html>
