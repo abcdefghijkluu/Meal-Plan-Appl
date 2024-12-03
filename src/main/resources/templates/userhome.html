@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Meal Planner</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+        .side-panel {
+            width: 260px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            height: 100vh;
+            position: fixed;
+        }
+        
+        .container {
+            margin-left: 320px;
+            padding: 20px;
+            max-width: 800px;
+            width: calc(100% - 320px);
+        }
+        .weekly-planner {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .weekly-planner th, .weekly-planner td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        .weekly-planner th {
+            background-color: #f4f4f4;
+        }
+        .meal-btn {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .meal-btn:hover {
+            background-color: #0056b3;
+        }
+        .done-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .done-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Side Panel -->
+<div class="side-panel">
+    <h2>Welcome!</h2>
+    <p>Welcome to your personalized meal planner where meal planning is made easier!</p>
+    <p><strong>Instructions:</strong></p>
+    <ul>
+        <li><strong>Step 1:</strong> Select up to 7 days of meal planning from the calendar.<br><br></li>
+        <li><strong>Step 2:</strong> For each day, you can select up to 5 meals (including breakfast, lunch, dinner, drinks, and desserts).<br><br></li>
+        <li><strong>Step 3:</strong> Once you've selected meals for all your days, click <strong>Done</strong> to generate an itemized grocery list.<br><br></li>
+        <li>Print the grocery list to make shopping easier!</li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <h1>Create Your Meal Plan</h1>
+
+    <!-- Flatpickr for Date Selection -->
+    <label for="meal-plan-range">Select each individual days (up to 7):</label>
+    <input id="meal-plan-range" type="text" placeholder="Pick dates" style="width: 100%; padding: 10px; margin-top: 10px;">
+
+    <!-- Weekly Planner Table -->
+    <table class="weekly-planner" id="planner-table">
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Meals</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically generated here -->
+        </tbody>
+    </table>
+
+    <!-- Done Button -->
+    <button class="done-btn" id="done-btn" style="display: none;">Done</button>
+</div>
+
+<script>
+    const plannerTable = document.getElementById("planner-table").querySelector("tbody");
+    const doneButton = document.getElementById("done-btn");
+
+    // Initialize Flatpickr for date selection
+    flatpickr("#meal-plan-range", {
+        mode: "multiple",
+        dateFormat: "Y-m-d",
+        onClose: function(selectedDates) {
+            if (selectedDates.length > 7) {
+                alert("You can only select up to 7 days.");
+                selectedDates.splice(7); // Keep only the first 7 dates
+            }
+            generatePlanner(selectedDates);
+        }
+    });
+
+    function generatePlanner(selectedDates) {
+        plannerTable.innerHTML = ""; // Clear existing rows
+
+        if (selectedDates.length === 0) {
+            doneButton.style.display = "none";
+            return;
+        }
+
+        selectedDates.forEach(date => {
+            const formattedDate = date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${formattedDate}</td>
+                <td>Up to 5 meals</td>
+                <td>
+                    <button class="meal-btn" onclick="selectMeals('${formattedDate}')">Select Meals</button>
+                </td>
+            `;
+            plannerTable.appendChild(row);
+        });
+
+        doneButton.style.display = "block";
+    }
+
+    function selectMeals(date) {
+        // Store the selected date in sessionStorage
+        sessionStorage.setItem("selectedDate", date);
+
+        // Redirect to recipe.html
+        window.location.href = "recipe.html";
+    }
+
+    doneButton.addEventListener("click", () => {
+        // Redirect to summary.html
+        window.location.href = "summary.html";
+    });
+</script>
+
+</body>
+</html>

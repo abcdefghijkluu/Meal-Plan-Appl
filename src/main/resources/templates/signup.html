@@ -27,6 +27,11 @@
             <br><br>
     
             <button type="submit">Submit</button>
+
+
+            <div th:if="${errorMessage}" class="error" style="color: red; font-weight: bold;">
+                <p th:text="${errorMessage}"></p>
+            </div>            
         </form>
     
 </body>
