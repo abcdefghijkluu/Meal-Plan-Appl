@@ -132,49 +132,53 @@ public class RecipeController {
     }
     @GetMapping("recipes/edit")
     public String editRecipes(Model model, @RequestParam int id) {
-        // Get the Optional<Recipes> object
         Optional<Recipes> optionalRecipe = recipesrepo.findById(id);
         
         if (optionalRecipe.isPresent()) {
-            Recipes recipe = optionalRecipe.get(); // Get the actual recipe from the Optional
-            
+            Recipes recipe = optionalRecipe.get();
             RecipesDto recipesDto = new RecipesDto();
-            recipesDto.setRecipeName(recipe.getRecipeName()); // Access recipe name from the recipe object
+    
+            // Populate DTO fields
+            recipesDto.setId(recipe.getId());  // Ensure ID is set here
+            recipesDto.setRecipeName(recipe.getRecipeName());
             recipesDto.setInstructions(recipe.getInstructions());
             recipesDto.setImageName(recipe.getImageName());
             recipesDto.setCategory(recipe.getCategory());
             recipesDto.setFoodType(recipe.getFoodType());
-            
-            // Add the recipeDto to the model so it's accessible in the view
+    
+            // Add to model
             model.addAttribute("recipeDto", recipesDto);
-            model.addAttribute("recipe", recipe);
         } else {
-            // Handle case where recipe is not found (optional, you can show an error page or redirect)
-            return "redirect:/recipes/recipe"; // Redirect to the list of recipes
+            return "redirect:/recipes/recipe";
         }
     
-        return "recipes/edit"; // Return the view for editing the recipe
+        return "recipes/edit";
     }
-    @PostMapping("recipes/edit")
-    public String editedRecipes(Model model, @RequestParam int id, @ModelAttribute RecipesDto recipesDto) {
-        Optional<Recipes> recipesOptional = recipesrepo.findById(id);
     
+    @PostMapping("recipes/edit")
+    public String editedRecipes(@RequestParam int id, @ModelAttribute RecipesDto recipesDto) {
+        System.out.println("Received ID: " + id);
+        System.out.println("Received DTO: " + recipesDto);
+    
+        Optional<Recipes> recipesOptional = recipesrepo.findById(id);
         if (recipesOptional.isPresent()) {
             Recipes recipes = recipesOptional.get();
     
-            // Update the recipe details
+            // Update fields
             recipes.setRecipeName(recipesDto.getRecipeName());
             recipes.setInstructions(recipesDto.getInstructions());
             recipes.setImageName(recipesDto.getImageName());
             recipes.setCategory(recipesDto.getCategory());
             recipes.setFoodType(recipesDto.getFoodType());
     
-            // Save the updated recipe back to the database
             recipesrepo.save(recipes);
+            System.out.println("Updated Recipe: " + recipes);
         }
     
-        return "redirect:/recipes/recipe"; // Redirect after saving
+        return "redirect:/recipes/recipe";
     }
+    
+    
     
     
     
