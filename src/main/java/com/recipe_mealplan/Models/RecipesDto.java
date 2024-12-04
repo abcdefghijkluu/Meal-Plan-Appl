@@ -1,6 +1,5 @@
 package com.recipe_mealplan.Models;
 
-import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -88,5 +87,7 @@ public class RecipesDto {
         this.foodType = foodType;
     }
     
+
+   
     
 }
