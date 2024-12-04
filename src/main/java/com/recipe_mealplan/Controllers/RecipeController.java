@@ -74,32 +74,7 @@ public class RecipeController {
         return "recipes/filtered";
     }
     
-    
 
-    // Show filtered recipes based on the query parameters passed
-    @GetMapping("/recipes/filtered")
-    public String showFilteredRecipes(
-            @RequestParam(required = false) List<String> category,
-            @RequestParam(required = false) List<String> foodType,
-            Model model) {
-
-        List<Recipes> filteredRecipes;
-
-        // Apply filters if provided
-        if (category != null && foodType != null) {
-            filteredRecipes = recipesrepo.findByCategoryInAndFoodTypeIn(category, foodType);
-        } else if (category != null) {
-            filteredRecipes = recipesrepo.findByCategoryIn(category);
-        } else if (foodType != null) {
-            filteredRecipes = recipesrepo.findByFoodTypeIn(foodType);
-        } else {
-            filteredRecipes = recipesrepo.findAll(); // No filters
-        }
-
-        // Add filtered recipes to the model
-        model.addAttribute("filtered", filteredRecipes);
-        return "recipes/filtered";  // Return the filtered recipes page
-    }
     // getting new recipes
     @GetMapping("recipes/create")
     public String createRecipes(Model model) {
@@ -177,6 +152,8 @@ public class RecipeController {
     
         return "redirect:/recipes/recipe";
     }
+
+
     
     
     

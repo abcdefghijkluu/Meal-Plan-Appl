@@ -1,5 +1,7 @@
 package com.recipe_mealplan.Models;
 
+import org.hibernate.annotations.Comment;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +14,7 @@ import jakarta.persistence.Table;
 public class RecipesDto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recipes_id")
     private int id;
 
     @Column(name = "recipe_name")
@@ -23,7 +26,7 @@ public class RecipesDto {
 
     @Column(name = "image_name")
     private String imageName;
-
+    @Column(name = "food_origin")
     private String category;
 
     @Column(name = "food_type")
