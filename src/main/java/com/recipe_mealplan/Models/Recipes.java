@@ -13,13 +13,11 @@ public class Recipes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "recipes_id")
+    @Column(name = "recipe_id")
     private int id;
 
     @Column(name = "recipe_name")
     private String recipeName;
-
-    private String ingredients;
 
     private String instructions;
 
@@ -47,13 +45,6 @@ public class Recipes {
         this.recipeName = recipeName;
     }
 
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
-    }
 
     public String getInstructions() {
         return instructions;

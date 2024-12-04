@@ -19,7 +19,6 @@ public class RecipesDto {
     @Column(name = "recipe_name")
     private String recipeName;
 
-    private String ingredients;
 
     private String instructions;
 
@@ -47,13 +46,6 @@ public class RecipesDto {
         this.recipeName = recipeName;
     }
 
-    public String getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(String ingredients) {
-        this.ingredients = ingredients;
-    }
 
     public String getInstructions() {
         return instructions;
