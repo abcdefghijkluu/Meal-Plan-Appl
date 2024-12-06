@@ -4,8 +4,8 @@
     <title>Filtered Recipes</title>
 </head>
 <body>
-
     <h1>Filtered Recipes</h1>
+    <a th:href="@{/recipes/create}">create a recipe</a>
 
     <!-- Check if there are no filtered recipes -->
     <div th:if="${filtered.isEmpty()}">
@@ -36,7 +36,14 @@
                     <td th:text="${recipe.category}"></td>
                     <td th:text="${recipe.foodType}"></td>
                     <td>
-                            <button id="add_button" type="submit">Add</button>
+                        <div class="action-buttons">
+                            <button class="add_button" type="submit">Add</button>
+                            <a th:href="@{'/recipes/edit?id=' + ${recipe.id}}" class="edit-link">Edit</a>
+                            <a th:href="@{'/recipes/delete?id=' + ${recipe.id}}"
+                            onclick="return confirm('Are you sure?')"
+                            class="delete-link">Delete</a>
+                         
+                        </div>
 
                         
 

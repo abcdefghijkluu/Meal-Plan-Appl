@@ -39,7 +39,6 @@ public class RecipeController {
         model.addAttribute("foodTypes", List.of("Breakfast", "Lunch/Dinner","Dessert","Drinks"));
         return "recipes/filter";  // This refers to the filter.html template
     }
-    
 
     // Handle the POST request from the filter form and redirect to the filtered recipes page
     @PostMapping("/recipes/filter")
@@ -88,7 +87,7 @@ public class RecipeController {
         // Save to database (if applicable)
         recipesrepo.save(recipes);
     
-        return "redirect:/recipes/recipe";
+        return "redirect:/recipes/filtered";
     }
     @GetMapping("recipes/delete")
     public String deleteRecipe(@RequestParam int id) {
@@ -97,7 +96,7 @@ public class RecipeController {
             Recipes recipe = optionalRecipe.get(); // Get the Recipes object from Optional
             recipesrepo.delete(recipe);
         }
-        return "redirect:/recipes/recipe"; // Redirect to the recipes listing page
+        return "redirect:/recipes/filter"; // Redirect to the recipes listing page
     }
     @GetMapping("recipes/edit")
     public String editRecipes(Model model, @RequestParam int id) {
@@ -118,7 +117,7 @@ public class RecipeController {
             // Add to model
             model.addAttribute("recipeDto", recipesDto);
         } else {
-            return "redirect:/recipes/recipe";
+            return "redirect:/recipes/filter";
         }
     
         return "recipes/edit";
@@ -144,6 +143,6 @@ public class RecipeController {
             System.out.println("Updated Recipe: " + recipes);
         }
     
-        return "redirect:/recipes/recipe";
+        return "redirect:/recipes/filter";
     }  
 }
