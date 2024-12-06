@@ -25,53 +25,54 @@ public class MealService {
         this.recipeRepository = recipeRepository;
     }
 
-    // Add or update meals for a specific date in a meal plan
     public void saveMealsForDate(Integer mealPlanId, String date, List<Integer> recipeIds) {
-        // Parse the date string to LocalDate
-        LocalDate mealDate = LocalDate.parse(date);
+        LocalDate mealDate = parseDate(date);
+        MealPlan mealPlan = fetchMealPlan(mealPlanId);
+        clearExistingMeals(mealPlanId, mealDate);
+        saveNewMeals(mealPlan, mealDate, recipeIds);
+    }
 
-        // Fetch the MealPlan entity
-        MealPlan mealPlan = mealPlanRepository.findById(mealPlanId)
-                .orElseThrow(() -> new IllegalArgumentException("MealPlan not found"));
-
-        // Clear existing meals for this date in the meal plan
-        mealRepository.deleteByMealPlan_IdAndDate(mealPlanId, mealDate);
-
-        // Save new meals for the date
+    private void saveNewMeals(MealPlan mealPlan, LocalDate mealDate, List<Integer> recipeIds) {
         for (Integer recipeId : recipeIds) {
             Recipes recipe = recipeRepository.findById(recipeId)
-                    .orElseThrow(() -> new IllegalArgumentException("Recipe not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Recipe not found with ID: " + recipeId));
 
             Meal meal = new Meal();
             meal.setMealPlan(mealPlan);
             meal.setDate(mealDate);
             meal.setRecipe(recipe);
-
-            mealRepository.save(meal);
+            mealRepository.save(meal); // Save each meal individually
         }
     }
 
-    // Get meals for a specific date in a meal plan
     public List<Meal> getMealsForDate(Integer mealPlanId, LocalDate date) {
         return mealRepository.findByMealPlan_IdAndDate(mealPlanId, date);
     }
+    
 
-    // Get meal count for a specific date in a meal plan
-    public int getMealCountForDate(Integer mealPlanId, LocalDate date) {
-        return mealRepository.countByMealPlan_IdAndDate(mealPlanId, date);
+    private LocalDate parseDate(String date) {
+        try {
+            return LocalDate.parse(date);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD");
+        }
     }
 
-    // Delete a meal by ID
+    private MealPlan fetchMealPlan(Integer mealPlanId) {
+        return mealPlanRepository.findById(mealPlanId)
+                .orElseThrow(() -> new IllegalArgumentException("MealPlan not found with ID: " + mealPlanId));
+    }
+
+    private void clearExistingMeals(Integer mealPlanId, LocalDate mealDate) {
+        mealRepository.deleteByMealPlan_IdAndDate(mealPlanId, mealDate);
+    }
+
     public void deleteMeal(Long mealId) {
         if (!mealRepository.existsById(mealId)) {
             throw new IllegalArgumentException("Meal not found");
         }
         mealRepository.deleteById(mealId);
     }
-
-    // Fetch all meals for a meal plan (for summary)
-    public List<Meal> getMealsForMealPlan(Integer mealPlanId) {
-        return mealRepository.findByMealPlan_Id(mealPlanId);
-    }
+    
 }
 

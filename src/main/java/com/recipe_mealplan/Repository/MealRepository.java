@@ -18,6 +18,9 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
 
     // Find meals by meal plan ID and date
     List<Meal> findByMealPlan_IdAndDate(Integer mealPlanId, LocalDate date);
+    boolean existsById(Long mealId);
+    void deleteById(Long mealId);
+    
 
     // Count meals by meal plan ID and date
     int countByMealPlan_IdAndDate(Integer mealPlanId, LocalDate date);
