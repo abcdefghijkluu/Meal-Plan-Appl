@@ -32,7 +32,7 @@ public class Meal {
     private LocalDate date;
 
     @ManyToOne
-    @JoinColumn(name = "meal_plan_id")
+    @JoinColumn(name = "meal_plan_id", nullable = false)
     private MealPlan mealPlan;
 
     @ManyToOne

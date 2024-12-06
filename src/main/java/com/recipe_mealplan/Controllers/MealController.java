@@ -2,7 +2,7 @@ package com.recipe_mealplan.Controllers;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map; 
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,14 +27,12 @@ public class MealController {
         this.mealService = mealService;
     }
 
-    /**
-     * Add a meal for a specific date in the meal plan.
-     * If a meal already exists for the date, it will append the recipe to the existing meals.
-     */
     @PostMapping("/save")
     public ResponseEntity<String> saveMealsForDate(@RequestBody Map<String, Object> payload) {
         Integer mealPlanId = (Integer) payload.get("mealPlanId");
         String date = (String) payload.get("date");
+
+        @SuppressWarnings("unchecked")
         List<Integer> recipeIds = (List<Integer>) payload.get("recipeIds");
 
         System.out.println("mealPlanId: " + mealPlanId);
@@ -49,9 +47,6 @@ public class MealController {
         return ResponseEntity.ok("Meals saved successfully!");
     }
 
-    /**
-     * Get all meals for a specific meal plan and date.
-     */
     @GetMapping
     public ResponseEntity<List<Meal>> getMealsForDate(
             @RequestParam Integer mealPlanId,
@@ -60,12 +55,11 @@ public class MealController {
         return ResponseEntity.ok(meals);
     }
 
-    /**
-     * Delete a meal by ID (optional).
-     */
     @DeleteMapping("/{mealId}")
     public ResponseEntity<Void> deleteMeal(@PathVariable Long mealId) {
         mealService.deleteMeal(mealId);
         return ResponseEntity.noContent().build();
     }
 }
+
+
