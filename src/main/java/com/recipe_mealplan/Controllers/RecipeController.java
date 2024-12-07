@@ -29,6 +29,18 @@ public class RecipeController {
         model.addAttribute("recipes", recipes);
         return "recipes/recipe"; // Display all recipes page
     }
+    @GetMapping("recipes/show") 
+    public String showPage(Model model) {
+        var recipes = recipesrepo.findAll(Sort.by(Sort.Direction.DESC,"id"));
+        model.addAttribute("recipes", recipes);
+        return "recipes/show"; // Display all recipes page
+    }
+    @GetMapping("recipes/Allrecipes") 
+    public String allPage(Model model) {
+        var recipes = recipesrepo.findAll(Sort.by(Sort.Direction.ASC,"id"));
+        model.addAttribute("recipes", recipes);
+        return "recipes/Allrecipes"; // Display all recipes page
+    }
 
     // Display the filter form page
     @GetMapping("/recipes/filter")

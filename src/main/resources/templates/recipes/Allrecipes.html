@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Meal Selection</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <style>
+        /* Scrollable table container */
+        .scrollable-table {
+            max-height: 700px; /* Adjust height as needed */
+            overflow-y: auto;
+            border: 1px solid #ccc; /* Optional border for visual clarity */
+            margin-bottom: 20px; /* Space between the table and buttons */
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <div>
+        <nav>
+            <a th:href="@{/}">Home Page</a>
+            <a th:href="@{/userhome}">User Home</a>
+            <a th:href="@{/recipes/recipe}">Recipes Page</a>
+            <a th:href="@{/recipes/filter}">Filter Recipes</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div>
+        <h1 class="Headers">Select Meals for</h1>
+            <h1><span id="selected-date"></span></h1>
+
+        <!-- Scrollable Table -->
+        <div class="scrollable-table">
+            <table class="Tables">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Recipe Name</th>
+                        <th>Instructions</th>
+                        <th>Food Origin</th>
+                        <th>Food Type</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Show message if no recipes are available -->
+                    <tr th:if="${#lists.isEmpty(recipes)}">
+                        <td colspan="6">No recipes available</td>
+                    </tr>
+
+                    <!-- Iterate through recipes and display them -->
+                    <tr th:each="recipe : ${recipes}">
+                        <td th:text="${recipe.id}"></td>
+                        <td th:text="${recipe.recipeName}"></td>
+                        <td th:text="${recipe.instructions}"></td>
+                        <td th:text="${recipe.category}"></td>
+                        <td th:text="${recipe.foodType}"></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+ 
+</body>
+</html>
+
+
