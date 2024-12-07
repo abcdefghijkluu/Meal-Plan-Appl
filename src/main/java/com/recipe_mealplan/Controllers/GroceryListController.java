@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.recipe_mealplan.service.GroceryListService;
 import com.recipe_mealplan.Models.RecipeIngredientDTO;
-import com.recipe_mealplan.recipe_app.service.MealService;
 import com.recipe_mealplan.Models.MealDetailsDTO;
 
 
