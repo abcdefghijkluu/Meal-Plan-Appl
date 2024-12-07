@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,8 @@ public class MealPlanService {
 
     private final MealPlanRepository mealPlanRepository;
     private final MealRepository mealRepository; 
-    private final RecipeIngredientRepository recipeIngredientRepository; // Add RecipeIngredientRepository
+    @Autowired
+    private RecipeIngredientRepository recipeIngredientRepository; // Add RecipeIngredientRepository
     private final UserRepository userRepository;
 
     public MealPlanService(MealPlanRepository mealPlanRepository, 
@@ -92,12 +94,15 @@ public class MealPlanService {
         System.out.println("Meal plan finalized successfully for ID: " + mealPlanId);
     }
 
+
+    //finding the meal plan by id
     public MealPlan getMealPlanById(Integer id) {
         return mealPlanRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Meal Plan not found"));
     }
 
+    //finding the recipeby id
     public List<RecipeIngredient> getIngredientsForRecipe(Integer recipeId) {
-        return recipeIngredientRepository.findByRecipe_Id(recipeId); // Fix the injection issue
+        return recipeIngredientRepository.findByRecipe_Id(recipeId);
     }
 
     public List<MealPlan> getMealPlansByUser(Integer userId) {

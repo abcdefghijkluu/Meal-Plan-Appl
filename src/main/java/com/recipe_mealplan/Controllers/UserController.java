@@ -22,6 +22,8 @@ import com.recipe_mealplan.Repository.UserRepository;
 import com.recipe_mealplan.entity.User;
 import com.recipe_mealplan.service.UserService;
 
+import jakarta.servlet.http.HttpSession;
+
 // handles incoming http request and returns response
 
 @RestController
@@ -65,15 +67,16 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password, HttpSession session) {
         Optional<User> user = userRepository.findByUsername(username);
-
+    
         if (user.isPresent()) {
             User existingUser = user.get();
-
+    
             if (existingUser.getPassword().equals(password)) {
-                // Return userId upon successful login
-                return ResponseEntity.ok(Collections.singletonMap("userId", existingUser.getId()));
+                // Store userId in session
+                session.setAttribute("userId", existingUser.getId());
+                return ResponseEntity.ok(Collections.singletonMap("message", "Login successful"));
             } else {
                 return ResponseEntity.status(401).body("Invalid password.");
             }

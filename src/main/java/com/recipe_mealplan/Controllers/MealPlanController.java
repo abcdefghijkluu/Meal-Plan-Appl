@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.recipe_mealplan.Models.MealDetailsDTO;
 import com.recipe_mealplan.entity.MealPlan;
 import com.recipe_mealplan.service.MealPlanService;
+import com.recipe_mealplan.service.MealService;
+
+import jakarta.servlet.http.HttpSession;
 
 
 @Controller
@@ -24,6 +29,8 @@ import com.recipe_mealplan.service.MealPlanService;
 public class MealPlanController {
 
     private final MealPlanService mealPlanService;
+    @Autowired
+    private MealService mealService;
 
     public MealPlanController(MealPlanService mealPlanService) {
         this.mealPlanService = mealPlanService;
@@ -76,6 +83,15 @@ public class MealPlanController {
 
         // Render userhome.html
         return "userhome";
+    }
+
+    //OEISY
+    @GetMapping("/details")
+    public String getMealPlanDetails(HttpSession session, Model model) {
+        Integer userId = (Integer) session.getAttribute("userId");
+        List<MealDetailsDTO> mealDetails = mealService.getMealPlanDetails(userId);
+        model.addAttribute("mealDetails", mealDetails);
+        return "mealplan/details"; // Thymeleaf view for meal plan details
     }
 
     /**
