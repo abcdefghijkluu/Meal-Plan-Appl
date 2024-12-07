@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Full-Page Centering */
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navigation Bar Styling */
+        nav {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #007BFF;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Styling */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        /* Filters Side by Side */
+        .filters-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .filter-box {
+            flex: 1;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+        }
+
+        legend {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <a th:href="@{/}">Home Page</a>
+        <a th:href="@{/userhome}">User Home</a>
+        <a th:href="@{/recipes/filtered}">Recipes Page</a>
+    </nav>
+
+    <!-- Filter Form -->
+    <form action="/recipes/filter" method="post">
+        <div class="filters-container">
+            <!-- Filter by Origin -->
+            <fieldset class="filter-box">
+                <legend>Origin</legend>
+                <label th:each="category : ${categories}">
+                    <input type="checkbox" name="categories" th:value="${category}" />
+                    <span th:text="${category}"></span>
+                </label>
+            </fieldset>
+        
+            <!-- Filter by Food Type -->
+            <fieldset class="filter-box">
+                <legend>Food Type</legend>
+                <label th:each="foodType : ${foodTypes}">
+                    <input type="checkbox" name="foodTypes" th:value="${foodType}" />
+                    <span th:text="${foodType}"></span>
+                </label>
+            </fieldset>
+        </div>
+
+        <button type="submit">Filter Recipes</button>
+    </form>
+</body>
+</html>

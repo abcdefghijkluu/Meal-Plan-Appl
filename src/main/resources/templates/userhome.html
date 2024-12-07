@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Meal Planner</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Side Panel Styles */
+        .side-panel {
+            width: 25%;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .side-panel h3 {
+            margin-top: 0;
+        }
+
+        .side-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .side-panel ul li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* Navigation bar styles */
+        .nav-bar {
+            background-color: #f8f9fa;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .nav-bar h2 {
+            margin: 0 0 10px;
+            font-size: 24px;
+        }
+
+        .nav-bar p {
+            margin: 5px 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a:active {
+            background-color: #004085;
+            transform: translateY(1px);
+        }
+
+        /* Weekly planner table styles */
+        .weekly-planner {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .weekly-planner th, .weekly-planner td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .weekly-planner th {
+            background-color: #f4f4f4;
+        }
+
+        .meal-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .meal-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .done-btn {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+
+        .done-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body onload="checkUserId()">
+
+<!-- Side Panel -->
+<div class="side-panel">
+    <h3>Welcome to Your User Home Page</h3>
+    <ul>
+        <li>How to Navigate the website</li>
+        <li><strong>1.</strong> You can interact with the recipes by selecting the buttons on the top of the page</li>
+        <li><strong>2.</strong> You can also create your meal plan.</li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <h1>Basic Functions</h1>
+        <p>Click on these links below to interact with recipes in the database</p>
+
+        <div class="nav-links">
+            <a href="/">Home Page</a>
+            <a href="/recipes/recipe">Recipes Page</a>
+            <a href="/recipes/filter">Filter the Recipes</a>
+            <a href="/recipes/edit">Edit the Recipes</a>
+            <a href="/recipes/create">Create the Recipes</a>
+            <a th:href="@{/mealplan/details(userId=${userId})}">Previous Meal Plans</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Create Your Meal Plan Below</h1>
+        <p><strong>Step 1:</strong> Select your dates for your meal plan</p>
+        <p><strong>Step 2:</strong> Click "Initialize Meal Plan" to save the dates</p>
+        <p><strong>Step 3:</strong> Click "Select Meals" to append up to 5 recipes per day</p>
+
+        <!-- Flatpickr for Date Selection -->
+        <label for="meal-plan-range">Select up to 7 days:<br></label>
+        <input id="meal-plan-range" type="text" placeholder="Click Here For Dates" style="width: 50%; padding: 10px; margin-top: 10px;">
+        <button id="save-dates-btn" class="done-btn" style="margin-top: 20px; display: none;">Initiate Meal Plan</button>
+
+        <!-- Weekly Planner Table -->
+        <table class="weekly-planner">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>Meals</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="planner-table">
+                <tr id="no-dates-row">
+                    <td colspan="3">No dates selected. Use the calendar above to choose dates.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Finalize Button -->
+    <div id="finalize-container" style="display: none; margin-top: 20px;">
+        <button id="finalize-btn" class="done-btn">Finalize Meal Plan</button>
+    </div>
+</div>
+
+<script>
+    let selectedDates = [];
+    const saveDatesBtn = document.getElementById('save-dates-btn');
+    const plannerTable = document.getElementById('planner-table');
+    const noDatesRow = document.getElementById('no-dates-row');
+
+    function checkUserId() {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) {
+            console.error("User ID not found in sessionStorage. Redirecting to login.");
+            alert("User is not logged in. Redirecting to login page.");
+            window.location.href = "/login";
+        } else {
+            console.log("User ID:", userId);
+        }
+    }
+
+    // Initialize Flatpickr for date selection
+    flatpickr("#meal-plan-range", {
+        mode: "multiple",
+        dateFormat: "Y-m-d",
+        onClose: function(dates) {
+            if (dates.length > 7) {
+                alert("You can only select up to 7 days.");
+                dates.splice(7);
+            }
+            selectedDates = dates.map(date => date.toISOString().split("T")[0]);
+            console.log("Selected Dates:", selectedDates);
+            generatePlanner(selectedDates);
+            saveDatesBtn.style.display = selectedDates.length > 0 ? 'block' : 'none';
+        }
+    });
+
+    function generatePlanner(dates) {
+        plannerTable.innerHTML = ""; // Clear the table
+        if (dates.length === 0) {
+            plannerTable.appendChild(noDatesRow);
+        } else {
+            dates.forEach((date) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td>Breakfast, Lunch, Dinner, Snack</td>
+                    <td>
+                        <button class="meal-btn" onclick="selectMeals('${date}')">Select Meals</button>
+                    </td>
+                `;
+                plannerTable.appendChild(row);
+            });
+        }
+        checkIfFinalizeNeeded(); // Check if the finalize button should appear
+    }
+
+
+    function selectMeals(date) {
+        const userId = sessionStorage.getItem("userId");
+        const mealPlanId = sessionStorage.getItem("mealPlanId");
+        const remainingDays = selectedDates.filter(d => d !== date); // Get remaining dates
+
+        sessionStorage.setItem("remainingDays", JSON.stringify(remainingDays));
+        sessionStorage.setItem("selectedDate", date); // Store selected date
+
+        if (!userId) {
+            console.error("User ID is missing. Redirecting to login.");
+            alert("User ID is missing. Redirecting to login.");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (!mealPlanId) {
+            console.error("Meal Plan ID is missing in sessionStorage. Please save the meal plan first.");
+            alert("Meal Plan ID is missing. Please create a meal plan first.");
+            return;
+        }
+
+        console.log("Redirecting to recipe selection for date:", date, "MealPlanID:", mealPlanId);
+        window.location.href = `/recipes/recipe?date=${date}&mealPlanId=${mealPlanId}`;
+    }
+
+
+    saveDatesBtn.addEventListener('click', () => {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) {
+            alert("User is not logged in. Redirecting to login page.");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (selectedDates.length === 0) {
+            alert("No dates selected. Please select dates before saving.");
+            return;
+        }
+
+        saveDatesBtn.disabled = true; // Disable the button to prevent multiple clicks
+        saveDatesBtn.textContent = "Saving..."; // Show loading state
+
+        console.log("UserID:", userId); // Debugging log
+        console.log("Selected Dates:", selectedDates); // Debugging log
+
+        // Send data to backend
+        fetch(`/api/mealplans/create?userId=${userId}&selectedDates=${selectedDates.join(',')}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+            console.log("API Response Status:", response.status); // Debug response status
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Failed to create meal plan');
+            }
+        })
+        .then(data => {
+            console.log("Meal Plan Response:", data); // Debug response
+            if (data.mealPlanId) {
+                sessionStorage.setItem("mealPlanId", data.mealPlanId); // Store mealPlanId
+                alert('Meal plan initiated!');
+            } else {
+                console.error("Meal Plan ID missing in response:", data);
+                alert('Failed to retrieve Meal Plan ID. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error("Error creating meal plan:", error);
+            alert('Failed to save meal plan. Please try again.');
+        })
+        .finally(() => {
+            saveDatesBtn.disabled = false; // Re-enable the button
+            saveDatesBtn.textContent = "Save Meal Plan"; // Reset button text
+            checkIfFinalizeNeeded(); // Check finalize status
+        });
+    });
+
+    function checkIfFinalizeNeeded() {
+        console.log("Checking if finalize button should be displayed...");
+        
+        const rows = plannerTable.querySelectorAll("tr");
+        const remainingDays = Array.from(rows).filter(
+            row => row.querySelector(".meal-btn") // Check if there are still "Select Meals" buttons
+        );
+
+        console.log("Remaining Days:", remainingDays.length);
+
+        const finalizeContainer = document.getElementById("finalize-container");
+        if (remainingDays.length === 0 && selectedDates.length > 0) {
+            console.log("All days completed. Showing finalize button.");
+            finalizeContainer.style.display = "block";
+        } else {
+            console.log("Some days still need meals. Hiding finalize button.");
+            finalizeContainer.style.display = "none";
+        }
+    }
+
+
+    document.getElementById("finalize-btn").addEventListener("click", () => {
+        const userId = sessionStorage.getItem("userId");
+        const mealPlanId = sessionStorage.getItem("mealPlanId");
+
+        if (!userId || !mealPlanId) {
+            alert("User or Meal Plan information is missing. Please try again.");
+            return;
+        }
+
+        fetch(`/api/mealplans/finalize?userId=${userId}&mealPlanId=${mealPlanId}`, {
+            method: "POST",
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Meal plan finalized successfully!");
+                sessionStorage.clear(); // Clear session data
+                window.location.href = "/mealplan/details.html"; // Redirect to meal plan details
+            } else {
+                throw new Error("Failed to finalize meal plan.");
+            }
+        })
+        .catch(error => {
+            console.error("Error finalizing meal plan:", error);
+            alert("An error occurred. Please try again.");
+        });
+    });
+</script>
+
+
+</body>
+</html>

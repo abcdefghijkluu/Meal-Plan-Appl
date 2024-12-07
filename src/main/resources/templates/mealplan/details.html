@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meal Plan Details</title>
+</head>
+<body>
+
+<h1>Meal Plan Details</h1>
+
+<div th:if="${#lists.isEmpty(mealDetails)}">
+    <p>No meal plan details found for current user.</p>
+</div>
+
+
+<!-- Loop through each MealDetailsDto in the list -->
+<div th:each="mealDetail : ${mealDetails}">
+    <h4>Meal on <span th:text="${mealDetail.date}"></span></h4>
+    
+    <!-- Display Recipe Name -->
+    <p><strong>Recipe:</strong> <span th:text="${mealDetail.recipeName}"></span></p>
+    
+    <!-- Loop through ingredients for this meal -->
+    <h5>Ingredients:</h5>
+    <ul>
+        <li th:each="ingredient : ${mealDetail.ingredients}">
+            <span th:text="${ingredient.quantity}"></span> 
+            <span th:text="${ingredient.unit}"></span> 
+            <span th:text="${ingredient.ingredientName}"></span>
+        </li>
+    </ul>
+    
+    <!-- Display Instructions for the Recipe -->
+    <h5>Instructions:</h5>
+    <p th:text="${mealDetail.instructions}"></p>
+
+</div>
+
+</body>
+</html>
