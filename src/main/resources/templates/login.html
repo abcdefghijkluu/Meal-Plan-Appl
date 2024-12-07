@@ -17,7 +17,6 @@
         <h1>Login Page</h1>
     </div>
 
-
     <!-- Login form -->
     <form action="/api/user/login" method="POST">
         <label for="username">Username:</label>
@@ -34,5 +33,34 @@
     <div style="color: red; font-weight: bold;">
         <p th:text="${error}"></p>
     </div>
+
+    <!-- JavaScript for handling form submission -->
+    <script>
+        document.querySelector("form").addEventListener("submit", async (e) => {
+            e.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(e.target);
+
+            // Send login request via Fetch API
+            const response = await fetch("/api/user/login", {
+                method: "POST",
+                body: new URLSearchParams(formData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const userId = data.userId;
+
+                // Store userId in sessionStorage
+                sessionStorage.setItem("userId", userId);
+
+                // Redirect to userhome.html
+                window.location.href = "/userhome";
+            } else {
+                const error = await response.text();
+                alert("Login failed: " + error);
+            }
+        });
+    </script>
 </body>
 </html>

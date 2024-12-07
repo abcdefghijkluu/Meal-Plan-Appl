@@ -1,4 +1,4 @@
-package com.recipe_mealplan.recipe_app.dto;
+package com.recipe_mealplan.recipe_app.Models;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,5 +13,3 @@ public class UserDTO {
     private String password;
 
 }
-
-

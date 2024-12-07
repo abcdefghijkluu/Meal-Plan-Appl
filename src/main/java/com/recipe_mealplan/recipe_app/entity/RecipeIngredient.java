@@ -11,19 +11,20 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "recipe_ingredient")
 @Getter
 @Setter
+@Entity
+@Table(name = "recipe_ingredient")
 public class RecipeIngredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "recipe_ingredient_id")
     private Long recipeIngredientId;
 
     @ManyToOne
     @JoinColumn(name = "recipe_id", nullable = false)
-    private Recipe recipe;
+    private Recipes recipe;
 
     @Column(name = "ingredient_name", nullable = false)
     private String ingredientName;
@@ -32,6 +33,5 @@ public class RecipeIngredient {
     private Double quantity;
 
     @Column(name = "unit", nullable = false)
-    private String unit; // e.g., "grams", "cups", etc.
-
+    private String unit;
 }

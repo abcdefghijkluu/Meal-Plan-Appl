@@ -1,5 +1,6 @@
 package com.recipe_mealplan.recipe_app.entity;
 
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,29 +10,30 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "recipes")
+
 @Getter
 @Setter
-public class Recipe {
+@Entity
+@Table(name = "recipes")
+public class Recipes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long recipeId;
+    @Column(name = "recipe_id")
+    private Integer id;
 
-    @Column(name = "recipe_name", nullable = false)
+    @Column(name = "recipe_name")
     private String recipeName;
 
-    @Column(name = "instructions", nullable = false)
     private String instructions;
 
-    @Column(name = "image_name", nullable = false)
+    @Column(name = "image_name")
     private String imageName;
 
-    @Column(name = "food_origin", nullable = false)
-    private String foodOrigin;
+    @Column(name = "food_origin")
+    private String category;
 
-    @Column(name = "food_type", nullable = false)
-    private String foodType; 
+    @Column(name = "food_type")
+    private String foodType;
 
 }

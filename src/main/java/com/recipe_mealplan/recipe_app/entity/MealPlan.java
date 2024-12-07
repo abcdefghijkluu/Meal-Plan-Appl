@@ -1,5 +1,6 @@
 package com.recipe_mealplan.recipe_app.entity;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,17 +17,18 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-// corresponds to the table in the database with respective attributes
+// Represent users mealplan by defining the date range and organizes each meal. 
 
-@Entity
-@Table(name = "meal_plan")
 @Getter
 @Setter
+@Entity
+@Table(name = "meal_plan") 
 public class MealPlan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long mealPlanId;
+    @Column(name = "meal_plan_id")
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -35,7 +37,7 @@ public class MealPlan {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "end_date",  nullable = false)
+    @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
     @OneToMany(mappedBy = "mealPlan", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -43,5 +45,4 @@ public class MealPlan {
 
     @OneToMany(mappedBy = "mealPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroceryItem> groceryItems;
-
 }

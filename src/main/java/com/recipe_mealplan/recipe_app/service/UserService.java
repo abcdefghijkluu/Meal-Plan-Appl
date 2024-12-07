@@ -5,9 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.recipe_mealplan.recipe_app.dto.UserDTO;
+import com.recipe_mealplan.recipe_app.Models.UserDTO;
 import com.recipe_mealplan.recipe_app.entity.User;
-import com.recipe_mealplan.recipe_app.repository.UserRepository;  
+import com.recipe_mealplan.recipe_app.repository.UserRepository;
+
 
 // handles logic related to CRUD operations
 
@@ -24,7 +25,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
     }
 
@@ -39,16 +40,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, UserDTO userDTO) {
+    public User updateUser(Integer id, UserDTO userDTO) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
         return userRepository.save(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
 }
-
 

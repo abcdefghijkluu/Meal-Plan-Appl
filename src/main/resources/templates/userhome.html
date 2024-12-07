@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,6 @@
             height: 100vh;
             position: fixed;
         }
-        
         .container {
             margin-left: 320px;
             padding: 20px;
@@ -64,9 +63,34 @@
         .done-btn:hover {
             background-color: #218838;
         }
+
+        nav a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            border: 1px solid transparent;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px); /* Adds a slight "lift" effect */
+        }
+
+        nav a:active {
+            background-color: #004085;
+            transform: translateY(1px); /* Adds a "pressed" effect */
+        }
+
     </style>
 </head>
-<body>
+<body onload="checkUserId()">
 
 <!-- Side Panel -->
 <div class="side-panel">
@@ -75,10 +99,19 @@
     <p><strong>Instructions:</strong></p>
     <ul>
         <li><strong>Step 1:</strong> Select up to 7 days of meal planning from the calendar.<br><br></li>
-        <li><strong>Step 2:</strong> For each day, you can select up to 5 meals (including breakfast, lunch, dinner, drinks, and desserts).<br><br></li>
+        <li><strong>Step 2:</strong> For each day, select recipes for Breakfast, Lunch, Dinner, and Snack (or skip meals you don’t plan to cook).<br><br></li>
         <li><strong>Step 3:</strong> Once you've selected meals for all your days, click <strong>Done</strong> to generate an itemized grocery list.<br><br></li>
         <li>Print the grocery list to make shopping easier!</li>
     </ul>
+    <div>
+        <nav>
+            <a href="/" style="display: block; margin-bottom: 10px;">Home Page</a>
+            <a href="/recipes/recipe" style="display: block; margin-bottom: 10px;">Recipes Page</a>
+            <a href="/recipes/filter" style="display: block; margin-bottom: 10px;">Filter the Recipes</a>
+            <a th:href="@{/api/mealplans/details(userId=${userId})}" style="display: block; margin-bottom: 10px;">Meal Plan Recipes</a>
+        </nav>
+        
+    </div>
 </div>
 
 <!-- Main Content -->
@@ -86,11 +119,12 @@
     <h1>Create Your Meal Plan</h1>
 
     <!-- Flatpickr for Date Selection -->
-    <label for="meal-plan-range">Select each individual days (up to 7):</label>
+    <label for="meal-plan-range">Select up to 7 days:</label>
     <input id="meal-plan-range" type="text" placeholder="Pick dates" style="width: 100%; padding: 10px; margin-top: 10px;">
+    <button id="save-dates-btn" class="done-btn" style="margin-top: 20px; display: none;">Save Meal Plan</button>
 
     <!-- Weekly Planner Table -->
-    <table class="weekly-planner" id="planner-table">
+    <table class="weekly-planner">
         <thead>
             <tr>
                 <th>Day</th>
@@ -98,70 +132,143 @@
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody>
-            <!-- Rows will be dynamically generated here -->
+        <tbody id="planner-table">
+            <tr id="no-dates-row">
+                <td colspan="3">No dates selected. Use the calendar above to choose dates.</td>
+            </tr>
         </tbody>
     </table>
-
-    <!-- Done Button -->
-    <button class="done-btn" id="done-btn" style="display: none;">Done</button>
 </div>
 
 <script>
-    const plannerTable = document.getElementById("planner-table").querySelector("tbody");
-    const doneButton = document.getElementById("done-btn");
+    let selectedDates = [];
+    const saveDatesBtn = document.getElementById('save-dates-btn');
+    const plannerTable = document.getElementById('planner-table');
+    const noDatesRow = document.getElementById('no-dates-row');
+
+    function checkUserId() {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) {
+            console.error("User ID not found in sessionStorage. Redirecting to login.");
+            alert("User is not logged in. Redirecting to login page.");
+            window.location.href = "/login";
+        } else {
+            console.log("User ID:", userId);
+        }
+    }
 
     // Initialize Flatpickr for date selection
     flatpickr("#meal-plan-range", {
         mode: "multiple",
         dateFormat: "Y-m-d",
-        onClose: function(selectedDates) {
-            if (selectedDates.length > 7) {
+        onClose: function(dates) {
+            if (dates.length > 7) {
                 alert("You can only select up to 7 days.");
-                selectedDates.splice(7); // Keep only the first 7 dates
+                dates.splice(7);
             }
+            selectedDates = dates.map(date => date.toISOString().split("T")[0]);
+            console.log("Selected Dates:", selectedDates);
             generatePlanner(selectedDates);
+            saveDatesBtn.style.display = selectedDates.length > 0 ? 'block' : 'none';
         }
     });
 
-    function generatePlanner(selectedDates) {
-        plannerTable.innerHTML = ""; // Clear existing rows
-
-        if (selectedDates.length === 0) {
-            doneButton.style.display = "none";
-            return;
+    function generatePlanner(dates) {
+        plannerTable.innerHTML = ""; // Clear the table
+        if (dates.length === 0) {
+            plannerTable.appendChild(noDatesRow);
+        } else {
+            dates.forEach((date) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td>Breakfast, Lunch, Dinner, Snack</td>
+                    <td>
+                        <button class="meal-btn" onclick="selectMeals('${date}')">Select Meals</button>
+                    </td>
+                `;
+                plannerTable.appendChild(row);
+            });
         }
-
-        selectedDates.forEach(date => {
-            const formattedDate = date.toISOString().split("T")[0]; // Format as YYYY-MM-DD
-            const row = document.createElement("tr");
-
-            row.innerHTML = `
-                <td>${formattedDate}</td>
-                <td>Up to 5 meals</td>
-                <td>
-                    <button class="meal-btn" onclick="selectMeals('${formattedDate}')">Select Meals</button>
-                </td>
-            `;
-            plannerTable.appendChild(row);
-        });
-
-        doneButton.style.display = "block";
     }
 
     function selectMeals(date) {
-        // Store the selected date in sessionStorage
-        sessionStorage.setItem("selectedDate", date);
+        const userId = sessionStorage.getItem("userId");
+        const mealPlanId = sessionStorage.getItem("mealPlanId");
 
-        // Redirect to recipe.html
-        window.location.href = "recipe.html";
+        if (!userId) {
+            console.error("User ID is missing. Redirecting to login.");
+            alert("User ID is missing. Redirecting to login.");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (!mealPlanId) {
+            console.error("Meal Plan ID is missing in sessionStorage. Please save the meal plan first.");
+            alert("Meal Plan ID is missing. Please create a meal plan first.");
+            return;
+        }
+
+        console.log("Redirecting to recipe selection for date:", date, "MealPlanID:", mealPlanId);
+        sessionStorage.setItem("selectedDate", date); // Store selected date
+        window.location.href = `/recipes/recipe?date=${date}&mealPlanId=${mealPlanId}`;
     }
 
-    doneButton.addEventListener("click", () => {
-        // Redirect to summary.html
-        window.location.href = "summary.html";
-    });
-</script>
 
+    saveDatesBtn.addEventListener('click', () => {
+        const userId = sessionStorage.getItem("userId");
+        if (!userId) {
+            alert("User is not logged in. Redirecting to login page.");
+            window.location.href = "/login";
+            return;
+        }
+
+        if (selectedDates.length === 0) {
+            alert("No dates selected. Please select dates before saving.");
+            return;
+        }
+
+        saveDatesBtn.disabled = true; // Disable the button to prevent multiple clicks
+        saveDatesBtn.textContent = "Saving..."; // Show loading state
+
+        console.log("UserID:", userId); // Debugging log
+        console.log("Selected Dates:", selectedDates); // Debugging log
+
+        // Send data to backend
+        fetch(`/api/mealplans/create?userId=${userId}&selectedDates=${selectedDates.join(',')}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        })
+            .then(response => {
+                console.log("API Response Status:", response.status); // Debug response status
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to create meal plan');
+                }
+            })
+            .then(data => {
+                console.log("Meal Plan Response:", data); // Debug response
+                if (data.mealPlanId) {
+                    sessionStorage.setItem("mealPlanId", data.mealPlanId); // Store mealPlanId
+                    alert('Meal plan created successfully!');
+                } else {
+                    console.error("Meal Plan ID missing in response:", data);
+                    alert('Failed to retrieve Meal Plan ID. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error("Error creating meal plan:", error);
+                alert('Failed to save meal plan. Please try again.');
+            })
+            .finally(() => {
+                saveDatesBtn.disabled = false; // Re-enable the button
+                saveDatesBtn.textContent = "Save Meal Plan"; // Reset button text
+            });
+    });
+
+
+
+</script>
 </body>
 </html>
