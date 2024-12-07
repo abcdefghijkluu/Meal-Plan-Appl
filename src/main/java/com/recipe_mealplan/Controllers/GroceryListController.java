@@ -26,13 +26,7 @@ public class GroceryListController {
         List<RecipeIngredientDTO> groceryList = groceryListService.getGroceryListForMealPlan(mealPlanId);  // Pass dynamic mealPlanId
         model.addAttribute("groceryList", groceryList);
         return "recipes/test";
-    }
-       //OEISY
-       @GetMapping("/details")
-       public String getMealPlanDetails(@RequestParam Integer userId, Model model) {
-           List<MealDetailsDTO> mealDetails = MealService.getMealPlanDetails(userId);
-           model.addAttribute("mealDetails", mealDetails);
-           return "mealplan/details"; // Thymeleaf view for meal plan details
-       }
+
     
+}
 }
