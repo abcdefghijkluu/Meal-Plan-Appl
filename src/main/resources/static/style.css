@@ -1,9 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
   }
+ h1{text-align: center;}
   nav {
-    background-color: #333;
+    background-color: gray;
     overflow: hidden;
     text-align: center;
   }
@@ -35,32 +35,48 @@ body {
     text-align: center;
     font: bold;
   }
-  /* Add Button Styling */
-  .add_button {
-    display: inline-block; /* Makes it look like a button */
-    background-color: #4CAF50; /* Green background */
-    color: white; /* White text */
-    padding: 10px 20px; /* Button padding */
-    font-size: 16px; /* Text size */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    text-decoration: none; /* Remove underline */
-    text-align: center; /* Center text */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth hover transition */
-  }
-  
-  /* Hover effect */
-  .add_button:hover {
-    background-color: #45a049; /* Darker green on hover */
-  }
-  
-  /* Active effect (when clicked) */
-  .add_button:active {
-    background-color: #3e8e41; /* Even darker green */
-  }
-  .action-buttons {
-    display: flex;
-    gap: 10px; /* Adds space between buttons and links */
-    align-items: center; /* Aligns items vertically if they have different heights */
+.basicFunc {
+  display: inline-block;
+  padding: 10px 10px;
+  margin: 5px;
+  text-align: right;
+  text-decoration: none; /* Remove underline from links */
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ccc; /* Border for the button */
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #45a049;
+  color: white;
+}
+
+/* Style for the Edit button */
+.basicFunc.edit-link {
+  background-color: #4CAF50; /* Green background */
+  color: white;
+}
+
+.basicFunc.edit-link:hover {
+  background-color: #45a049; /* Darker green on hover */
+}
+
+/* Style for the Delete button */
+.basicFunc.delete-link {
+  background-color: #f44336; /* Red background */
+  color: white;
+}
+
+.basicFunc.delete-link:hover {
+  background-color: #da190b; /* Darker red on hover */
+}
+.table-container {
+  max-height: 400px; /* Adjust height as needed */
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 20px;
+}
+.action-buttons {
+  display: flex; /* Use flexbox to align buttons side by side */
+  gap: 10px; /* Add space between buttons */
 }

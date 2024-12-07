@@ -2,10 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Filtered Recipes</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <div>
+        <nav>
+            <a th:href="@{/}">Home Page</a>
+            <a th:href="@{/userhome}">User Home</a>
+            <a th:href="@{/recipes/filter}">Filter Recipes</a>
+        </nav>
+    </div>
 </head>
 <body>
     <h1>Filtered Recipes</h1>
-    <a th:href="@{/recipes/create}">create a recipe</a>
+    <a class="basicFunc" th:href="@{/recipes/create}">create a recipe</a>
 
     <!-- Check if there are no filtered recipes -->
     <div th:if="${filtered.isEmpty()}">
@@ -14,48 +22,43 @@
 
     <!-- Check if there are filtered recipes -->
     <div th:if="${not filtered.isEmpty()}">
-        <table class="Tables">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Recipe Name</th>
-                <th>Instructions</th>
-                <th>Food origin</th>
-                <th>Food Type</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr th:if="${#lists.isEmpty(recipes)}">
-                    <td colspan="6">No recipes available</td>
+        <div class="table-container"> <!-- Wrap the table in a scrollable container -->
+            <table class="Tables">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Recipe Name</th>
+                    <th>Instructions</th>
+                    <th>Food origin</th>
+                    <th>Food Type</th>
                 </tr>
-       
-                <tr th:each="recipe : ${filtered}">
-                    <td th:text="${recipe.id}"></td>
-                    <td th:text="${recipe.recipeName}"></td>
-                    <td th:text="${recipe.instructions}"></td>
-                    <td th:text="${recipe.category}"></td>
-                    <td th:text="${recipe.foodType}"></td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="add_button" type="submit">Add</button>
-                            <a th:href="@{'/recipes/edit?id=' + ${recipe.id}}" class="edit-link">Edit</a>
-                            <a th:href="@{'/recipes/delete?id=' + ${recipe.id}}"
-                            onclick="return confirm('Are you sure?')"
-                            class="delete-link">Delete</a>
-                         
-                        </div>
-
-                        
-
-                    </td>
-                </tr>
-            </tbody>
-            
-            
-        </table> 
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(filtered)}">
+                        <td colspan="6">No recipes available</td>
+                    </tr>
+           
+                    <tr th:each="recipe : ${filtered}">
+                        <td th:text="${recipe.id}"></td>
+                        <td th:text="${recipe.recipeName}"></td>
+                        <td th:text="${recipe.instructions}"></td>
+                        <td th:text="${recipe.category}"></td>
+                        <td th:text="${recipe.foodType}"></td>
+                        <td>
+                            <div class="action-buttons">
+                                <a class="basicFunc edit-link" th:href="@{'/recipes/edit?id=' + ${recipe.id}}">Edit</a>
+                                <a class="basicFunc delete-link" th:href="@{'/recipes/delete?id=' + ${recipe.id}}"
+                                onclick="return confirm('Are you sure?')">Delete</a>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table> 
+        </div>
     </div>
 
     <!-- Link to go back to the filter page -->
-    <a href="/recipes/filter">Go back to filter</a>
+    <a class="basicFunc" href="/recipes/filter">Go back to filter</a>
 </body>
 </html>
